@@ -1,0 +1,6 @@
+__pycache__/
+*.html
+.env
+.venv/
+venv/
+.streamlit/config.toml
