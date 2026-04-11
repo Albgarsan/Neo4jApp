@@ -1,0 +1,41 @@
+# Social Network Graph Analysis 🕸️
+
+Este proyecto ha sido desarrollado para la asignatura de **Complementos de Bases de Datos (CBD)** en la **Universidad de Sevilla**. Se trata de una aplicación web interactiva que implementa una base de datos orientada a grafos para gestionar y visualizar una red social de estudiantes y sus intereses académicos.
+
+## 🚀 Funcionalidades Principales
+
+* **Explorador Visual:** Visualización interactiva con física de partículas para diferenciar Usuarios (nodos azules) de Temas de Interés (diamantes amarillos).
+* **Gestión de Comunidad (CRUD):** Módulo completo para dar de alta, editar y dar de baja tanto usuarios como temas de la asignatura.
+* **Inteligencia de Red:** * Cálculo de la ruta más corta (Shortest Path) entre dos miembros de la red.
+    * Análisis de centralidad para identificar los perfiles más influyentes.
+    * Filtrado dinámico de intereses.
+
+## 🛠️ Stack Tecnológico
+
+* **Base de Datos:** [Neo4j AuraDB](https://neo4j.com/cloud/aura/) (Cloud Graph Database).
+* **Consultas:** Cypher Query Language.
+* **Backend & UI:** [Streamlit](https://streamlit.io/) (Python).
+* **Visualización:** [Pyvis](https://pyvis.readthedocs.io/) (Motor basado en vis.js).
+
+## 📋 Configuración y Uso
+
+1.  **Instalación de dependencias:**
+    ```bash
+    pip install streamlit neo4j pyvis
+    ```
+
+2.  **Configuración de base de datos:**
+    Modificar las credenciales en el archivo `main.py`:
+    ```python
+    URI = "bolt://tu-instancia.databases.neo4j.io"
+    USER = "neo4j"
+    PWD = "tu_password"
+    ```
+
+3.  **Ejecución:**
+    ```bash
+    streamlit run main.py
+    ```
+
+---
+Proyecto académico - Grado en Ingeniería Informática - Universidad de Sevilla.

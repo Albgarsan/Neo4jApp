@@ -1,11 +1,13 @@
-from httplib2 import URI
 import streamlit as st
 from neo4j import GraphDatabase
 import streamlit.components.v1 as components
 from pyvis.network import Network
 import os
+from dotenv import load_dotenv
 
-st.set_page_config(page_title="Graph Analytics Pro", layout="wide")
+load_dotenv()
+
+st.set_page_config(page_title="Social Network Graph Analysis 🕸️", layout="wide")
 
 driver = GraphDatabase.driver(os.getenv("NEO4J_URI"), auth=(os.getenv("NEO4J_USERNAME"), os.getenv("NEO4J_PASSWORD")))
 
@@ -332,3 +334,36 @@ elif menu == "🧠 Inteligencia de Red":
             st.info("Query ejecutada:")
             query_str = f"MATCH p = shortestPath((a:Usuario {{nombre: '{u1}'}})-[:SIGUE*..6]-(b:Usuario {{nombre: '{u2}'}}))\nRETURN [n in nodes(p) | n.nombre] AS nombres"
             st.code(query_str, language="cypher")
+
+    st.divider()
+    st.write("### 🔍 Filtrado Dinámico de Intereses")
+    st.write("Encuentra grupos de profesionales especializados en áreas concretas.")
+
+    temas_disponibles = [r['t'] for r in run_query("MATCH (t:Tema) RETURN t.nombre AS t ORDER BY t")]
+    
+    temas_busqueda = st.multiselect("Filtrar red por conocimientos:", temas_disponibles)
+
+    if temas_busqueda:
+        query_filtro = """
+        MATCH (u:Usuario)-[:INTERESADO_EN]->(t:Tema)
+        WHERE t.nombre IN $temas
+        RETURN u.nombre AS nombre, u.ciudad AS ciudad, count(t) AS coincidencia
+        ORDER BY coincidencia DESC, u.nombre ASC
+        """
+        resultados = run_query(query_filtro, {"temas": temas_busqueda})
+
+        if resultados:
+            st.success(f"Se han encontrado {len(resultados)} usuarios interesados en: {', '.join(temas_busqueda)}")
+            
+            for res in resultados:
+                st.write(f"👤 **{res['nombre']}** ({res['ciudad']}) - Coincide en {res['coincidencia']} tema(s).")
+            
+            with st.expander("🔍 Ver query usada"):
+                st.code(f"""
+                MATCH (u:Usuario)-[:INTERESADO_EN]->(t:Tema)
+                WHERE t.nombre IN {temas_busqueda}
+                RETURN u.nombre, u.ciudad, count(t) AS coincidencia
+                ORDER BY coincidencia DESC
+                """, language="cypher")
+        else:
+            st.warning("No hay usuarios registrados con esa combinación de intereses.")
